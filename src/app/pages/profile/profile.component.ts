@@ -33,28 +33,29 @@ export class ProfileComponent implements OnInit {
 
   // Default profile image
   defaultProfilePic = 'assets/ic_person.svg'; // Ganti dengan path placeholder Anda
+  profileImageUrl: string = this.defaultProfilePic; // URL gambar profil
 
   ngOnInit(): void {
     // Gunakan user observable dari Auth untuk mendapatkan user saat ini
     this.userProfile$ = user(this.auth).pipe(
       switchMap(currentUser => {
         if (currentUser) {
-          this.userEmail$ = of(currentUser.email); // Simpan email dari Auth
-          // Jika user login, ambil data profil dari Firestore
+          this.userEmail$ = of(currentUser.email);
           const userDocRef = doc(this.firestore, `users/${currentUser.uid}`);
           return getDoc(userDocRef).then(docSnap => {
+            let profile: UserProfile;
             if (docSnap.exists()) {
-              // Gabungkan data dari Firestore dengan uid
-              return { uid: currentUser.uid, ...docSnap.data() } as UserProfile;
+              profile = { uid: currentUser.uid, ...docSnap.data() } as UserProfile;
             } else {
-              console.warn(`Profile document not found for UID: ${currentUser.uid}`);
-              // Kembalikan data minimal jika dokumen tidak ditemukan
-              return { uid: currentUser.uid, email: currentUser.email, username: 'N/A' } as UserProfile;
+              profile = { uid: currentUser.uid, email: currentUser.email, username: 'N/A' } as UserProfile;
             }
+            // Set profile image URL or default
+            this.profileImageUrl = profile.profileImageUrl || this.defaultProfilePic;
+            return profile;
           });
         } else {
-          // Jika tidak ada user login, kembalikan null
           this.userEmail$ = of(null);
+          this.profileImageUrl = this.defaultProfilePic;
           return of(null);
         }
       }),
@@ -103,7 +104,8 @@ export class ProfileComponent implements OnInit {
 
    // Fungsi untuk menangani error saat gambar profil gagal dimuat
    onProfileImageError(event: Event): void {
-    console.warn('Profile image failed to load, using default.');
-    (event.target as HTMLImageElement).src = this.defaultProfilePic;
-   }
+    if (this.profileImageUrl !== this.defaultProfilePic) {
+      this.profileImageUrl = this.defaultProfilePic;
+    }
+  }
 }

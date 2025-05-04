@@ -43,6 +43,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   selectedFile: File | null = null;
   imagePreviewUrl: string | ArrayBuffer | null = null;
   defaultProfilePic = 'assets/ic_person.svg';
+  profileImageUrl: string = this.defaultProfilePic;
 
   // --- State variables ---
   // Gunakan BehaviorSubject untuk loading data awal
@@ -96,19 +97,21 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     ).subscribe(docSnap => {
       // Proses snapshot HANYA jika tidak null (artinya tidak ada error sebelumnya)
       if (docSnap) {
-          if (docSnap.exists()) {
-            console.log("EditProfileComponent: Firestore document found.");
-            const profileData = docSnap.data() as UserProfile;
-            this.username = profileData.username;
-            this.originalUsername = profileData.username;
-            this.currentProfileImageUrl = profileData.profileImageUrl || null;
-          } else if (this.currentUser) {
+        if (docSnap.exists()) {
+          console.log("EditProfileComponent: Firestore document found.");
+          const profileData = docSnap.data() as UserProfile;
+          this.username = profileData.username;
+          this.originalUsername = profileData.username;
+          this.currentProfileImageUrl = profileData.profileImageUrl || null;
+          this.profileImageUrl = profileData.profileImageUrl || this.defaultProfilePic; // Tambahkan baris ini
+        } else if (this.currentUser) {
             // Dokumen tidak ada, tapi user Auth ada
             console.warn(`EditProfileComponent: Firestore document not found for user ${this.currentUser.uid}`);
              // Set default atau biarkan kosong, error message bisa ditambahkan jika perlu
             this.username = '';
             this.originalUsername = '';
             this.errorMessage = "Data profil tidak ditemukan.";
+            this.profileImageUrl = this.defaultProfilePic; // Tambahkan baris ini
           }
       } else {
           // Handle kasus error atau user tidak ada dari switchMap/catchError
@@ -156,9 +159,10 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
    // Fungsi fallback gambar profil
    onProfileImageError(event: Event): void {
-    console.warn('Profile image failed to load, using default.');
-    (event.target as HTMLImageElement).src = this.defaultProfilePic;
-   }
+    if (this.profileImageUrl !== this.defaultProfilePic) {
+      this.profileImageUrl = this.defaultProfilePic;
+    }
+  }
 
    // Map error code (bisa digabung dengan yang di login/register)
    private mapAuthCodeToMessage(code: string): string {
