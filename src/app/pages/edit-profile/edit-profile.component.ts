@@ -7,7 +7,7 @@ import { switchMap, catchError, tap, first, finalize } from 'rxjs/operators'; //
 
 // Import Firebase services
 import { Auth, user, updatePassword, User } from '@angular/fire/auth';
-import { Firestore, doc, getDoc, updateDoc, DocumentReference, DocumentData } from '@angular/fire/firestore'; // Import DocumentData
+import { Firestore, doc, getDoc, updateDoc, setDoc, DocumentReference, DocumentData } from '@angular/fire/firestore'; // Import DocumentData
 
 // Import interface UserProfile
 import { UserProfile } from '../../models/user-profile.model'; // Sesuaikan path
@@ -225,12 +225,21 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     try {
       // Lakukan update Firestore jika ada perubahan
       if (Object.keys(firestoreUpdates).length > 0) {
-        console.log("Updating Firestore with:", firestoreUpdates);
-        await updateDoc(this.userDocRef, firestoreUpdates);
-        console.log("Firestore updated successfully.");
-        // Update data asli setelah sukses
-        this.originalUsername = firestoreUpdates.username ?? this.originalUsername;
-        this.currentProfileImageUrl = firestoreUpdates.profileImageUrl ?? this.currentProfileImageUrl;
+        try {
+          await updateDoc(this.userDocRef, firestoreUpdates);
+        } catch (err) {
+          // Jika gagal karena dokumen belum ada, buat baru
+          const error = err as { code?: string; message?: string };
+          if (error.code === 'not-found' || error.message?.includes('No document to update')) {
+            await setDoc(this.userDocRef, {
+              ...firestoreUpdates,
+              email: this.email,
+              uid: this.currentUser?.uid
+            }, { merge: true });
+          } else {
+            throw err;
+          }
+        }
       } else {
           console.log("No changes detected for Firestore.");
       }
@@ -260,9 +269,16 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      // You can add your logic here to handle the selected file,
-      // such as updating a preview or uploading the file.
-      // Example: this.selectedFile = file;
+      this.selectedFile = file;
+  
+      // Buat preview gambar
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        this.imagePreviewUrl = e.target?.result ?? null;
+        // Update juga profileImageUrl agar langsung terlihat di <img>
+        this.profileImageUrl = this.imagePreviewUrl as string;
+      };
+      reader.readAsDataURL(file);
     }
   }
 }
