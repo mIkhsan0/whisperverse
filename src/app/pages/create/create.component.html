@@ -1,0 +1,68 @@
+<div class="create-container">
+    <img src="assets/ic_smiley_cloud.svg" alt="Ikon Awan Tersenyum" class="mascot-icon">
+    <h1 class="create-title">Pesan Rahasia</h1>
+  
+    <p class="create-subtitle">Ini tempat aman untuk perasaanmu yang belum sempat terungkap.</p>
+  
+    <form (ngSubmit)="sendMessage()" #createForm="ngForm" class="create-form">
+      <div class="form-field">
+        <label for="recipient">Penerima:</label>
+        <input
+          type="text"
+          id="recipient"
+          name="recipient"
+          [(ngModel)]="recipient"
+          required
+          #recipientInput="ngModel"
+          placeholder="Nama penerima"
+          [class.invalid-input]="recipientInput.invalid && (recipientInput.dirty || recipientInput.touched)">
+        <div *ngIf="recipientInput.invalid && (recipientInput.dirty || recipientInput.touched)" class="error-message">
+          <span *ngIf="recipientInput.errors?.['required']">Nama penerima wajib diisi.</span>
+        </div>
+      </div>
+  
+      <div class="form-field">
+        <label for="message">Pesan:</label>
+        <textarea
+          id="message"
+          name="message"
+          rows="4"
+          [(ngModel)]="messageText"
+          required
+          #messageInput="ngModel"
+          placeholder="Tuliskan pesan rahasiamu"
+          [class.invalid-input]="messageInput.invalid && (messageInput.dirty || messageInput.touched)"></textarea>
+        <div *ngIf="messageInput.invalid && (messageInput.dirty || messageInput.touched)" class="error-message">
+          <span *ngIf="messageInput.errors?.['required']">Pesan wajib diisi.</span>
+        </div>
+      </div>
+  
+      <div class="form-field file-upload-field">
+         <label for="imageUpload" class="btn btn-outline">
+            <span class="material-icons-outlined">upload</span> {{ selectedFileName || 'Unggah Gambar (Opsional)' }}
+          </label>
+        <input
+          type="file"
+          id="imageUpload"
+          name="imageUpload"
+          accept="image/*"
+          (change)="onFileSelected($event)"
+          #fileInput>
+          <img *ngIf="imagePreviewUrl" [src]="imagePreviewUrl" alt="Preview Gambar" class="image-preview">
+      </div>
+  
+       <div *ngIf="errorMessage" class="error-message general-error">
+          {{ errorMessage }}
+        </div>
+  
+        <div *ngIf="isUploading || isSending" class="loading-indicator">
+          <p>{{ isUploading ? 'Mengunggah gambar...' : (isSending ? 'Mengirim pesan...' : '') }}</p>
+          </div>
+  
+  
+      <button type="submit" class="btn btn-primary btn-send" [disabled]="createForm.invalid || isUploading || isSending">
+        Kirim
+      </button>
+    </form>
+  </div>
+  

@@ -1,0 +1,50 @@
+<div class="home-page-container">
+
+  <header class="home-header" [class.scrolled]="isScrolled">
+    <div class="header-content">
+      <img src="assets/ic_smiley_cloud_2.svg" alt="Logo WhisperVerse" class="header-logo">
+      <h1 class="header-title">WhisperVerse</h1>
+      <p class="header-subtitle">Sssst... ada pesan rahasia untukmu.</p>
+      </div>
+
+    <div class="search-bar-sticky-container">
+       <div class="search-bar-wrapper">
+         <span class="material-icons-outlined search-icon"></span>
+         <input
+           type="search"
+           placeholder="Cari Penerima..."
+           class="search-input"
+           [ngModel]="searchTerm$.value" (input)="onSearchTermChange($event)" #searchInput>
+       </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <h2>Pesan Terbaru</h2>
+    <div class="message-grid" *ngIf="(messages$ | async) as messages; else loadingOrError">
+      <div class="message-card" *ngFor="let message of messages" (click)="navigateToDetail(message.documentId)">
+        <div class="card-header">
+          To: {{ message.recipient }}
+        </div>
+        <div class="card-body">
+          <img *ngIf="message.imageUrl" [src]="message.imageUrl" alt="Gambar Pesan" class="message-image" (error)="onImageError($event)">
+          <div *ngIf="!message.imageUrl" class="image-placeholder">
+            <span class="material-icons-outlined">image</span>
+          </div>
+          <p class="message-snippet">{{ message.snippet }}</p>
+        </div>
+        </div>
+      <div *ngIf="messages.length === 0 && (searchTerm$ | async)" class="no-messages">
+        Tidak ada pesan yang cocok dengan pencarian "{{ searchTerm$.value }}".
+      </div>
+       <div *ngIf="messages.length === 0 && !(searchTerm$ | async)" class="no-messages">
+        Belum ada pesan.
+      </div>
+    </div>
+
+    <ng-template #loadingOrError>
+      <div class="loading-indicator">Memuat pesan...</div>
+      </ng-template>
+  </main>
+
+</div>

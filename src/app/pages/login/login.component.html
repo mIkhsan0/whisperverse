@@ -1,0 +1,69 @@
+<div class="login-container">
+    <img src="assets/ic_smiley_cloud.svg" alt="Ikon Awan Tersenyum" class="mascot-icon">
+    <h1 class="login-title">Log In</h1>
+  
+    <p class="login-subtitle">Sudah siap membuka pesan rahasia hari ini?</p>
+  
+    <form (ngSubmit)="loginWithEmail()" #loginForm="ngForm" class="login-form">
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          email
+          #emailInput="ngModel"
+          placeholder="Masukkan email Anda"
+          [class.invalid-input]="emailInput.invalid && (emailInput.dirty || emailInput.touched)">
+        <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="error-message">
+          <span *ngIf="emailInput.errors?.['required']">Email wajib diisi.</span>
+          <span *ngIf="emailInput.errors?.['email']">Format email tidak valid.</span>
+        </div>
+      </div>
+  
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          minlength="6"
+          #passwordInput="ngModel"
+          placeholder="Masukkan password"
+          [class.invalid-input]="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)">
+         <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="error-message">
+          <span *ngIf="passwordInput.errors?.['required']">Password wajib diisi.</span>
+          <span *ngIf="passwordInput.errors?.['minlength']">Password minimal 6 karakter.</span>
+        </div>
+      </div>
+  
+       <div *ngIf="loginError" class="error-message general-error">
+          {{ loginError }}
+        </div>
+  
+      <a href="#" class="forgot-password-link">Lupa password?</a>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid || isLoading">
+        {{ isLoading ? 'Loading...' : 'Sign In' }}
+      </button>
+    </form>
+  
+    <div class="divider">
+      <span class="divider-text">atau masuk dengan</span>
+    </div>
+  
+    <button type="button" class="btn btn-google" (click)="loginWithGoogle()" [disabled]="isLoading">
+       <img src="assets/ic_google_logo.svg" alt="Logo Google" class="google-logo">
+      Google
+    </button>
+  
+    <p class="signup-link">
+      Belum punya akun? <a routerLink="/register">Daftar Sekarang</a>
+    </p>
+  
+</div>
+  

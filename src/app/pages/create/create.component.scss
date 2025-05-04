@@ -1,0 +1,215 @@
+/* Variabel Warna (sesuaikan dari colors.xml Anda) */
+$primary-color: #7077D6; // purple_400
+$primary-dark-color: #323AAE; // purple_600
+$accent-color: #578FCA; // blue_500
+$text-color: #000000;
+$text-light-color: #4D5256; // grey_500
+$background-color: #FFFFFF;
+$input-border-color: #323AAE; // purple_600
+$error-color: #D32F2F; // Warna merah untuk error
+$outline-btn-color: #323AAE; // purple_600
+$outline-btn-hover-bg: lighten($primary-color, 35%);
+
+/* Container utama */
+.create-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  background-color: $background-color;
+  box-sizing: border-box;
+  min-height: calc(100vh - 60px); /* Tinggi viewport dikurangi tinggi nav bawah */
+  padding-bottom: 80px; /* Extra padding di bawah */
+}
+
+/* Ikon maskot */
+.mascot-icon {
+  width: 60px;
+  height: 60px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+/* Judul */
+.create-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: $accent-color;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+/* Subjudul */
+.create-subtitle {
+  font-size: 14px;
+  color: $text-light-color;
+  text-align: center;
+  margin-bottom: 32px;
+  max-width: 350px;
+}
+
+/* Form */
+.create-form {
+  width: 100%;
+  max-width: 500px; /* Lebar form bisa lebih besar */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Field dalam form */
+.form-field {
+  margin-bottom: 16px;
+  width: 100%;
+
+  label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: $primary-dark-color;
+    font-weight: 500;
+  }
+
+  input[type="text"],
+  textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid $input-border-color;
+    border-radius: 12px; // Mirip edit_text_background_create
+    font-size: 14px;
+    box-sizing: border-box;
+    background-color: transparent;
+    color: $text-color;
+    resize: vertical; /* Allow vertical resize for textarea */
+
+    &::placeholder {
+      color: $primary-dark-color;
+      opacity: 0.7;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: darken($input-border-color, 10%);
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+  }
+
+  textarea {
+    min-height: 100px; // Tinggi minimal textarea
+  }
+
+   /* Style untuk input yang tidak valid */
+   .invalid-input {
+    border-color: $error-color;
+  }
+}
+
+/* File Upload Specific Styles */
+.file-upload-field {
+  width: 100%; // Container field tetap 100%
+  text-align: center; // Gunakan text-align untuk memusatkan elemen inline/inline-block/inline-flex di dalamnya
+
+  input[type="file"] {
+    display: none;
+  }
+
+  /* Style label agar terlihat seperti tombol outline */
+  label.btn-outline {
+    display: inline-flex; // Lebar sesuai konten, bersifat inline
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center; // Pastikan teks di dalamnya juga center
+    cursor: pointer;
+    padding: 12px 25px; // Padding horizontal bisa disesuaikan
+    border: 1px solid $outline-btn-color;
+    color: $outline-btn-color;
+    background-color: transparent;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    margin-top: 5px;
+    box-sizing: border-box; // Penting agar padding tidak menambah lebar efektif
+
+    .material-icons-outlined {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .file-name {
+        font-size: 11px;
+        font-style: italic;
+        margin-top: 2px;
+        color: $text-light-color;
+        word-break: break-all;
+        max-width: 180px; // Batasi lebar nama file agar tidak membuat tombol terlalu lebar
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &:hover {
+      background-color: $outline-btn-hover-bg;
+    }
+  }
+
+  .image-preview {
+    display: block; // Tetap block
+    max-width: 80%; // Batasi lebar preview
+    max-height: 150px;
+    margin: 15px auto 0; // Gunakan margin auto untuk centering elemen block
+    border-radius: 8px;
+    border: 1px solid $input-border-color;
+    object-fit: contain;
+  }
+}
+
+/* Pesan error */
+.error-message {
+  color: $error-color;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.general-error {
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    text-align: center;
+    margin-bottom: 16px;
+    color: $primary-dark-color;
+    font-style: italic;
+}
+
+
+/* Tombol Umum */
+.btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  text-transform: none;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/* Tombol Primary (Kirim) */
+.btn-primary.btn-send {
+  background-color: $primary-color;
+  color: $background-color;
+  font-size: 20px; // Ukuran font besar seperti di XML
+  margin-top: 16px; // Jarak dari elemen di atasnya
+
+  &:hover:not(:disabled) {
+    background-color: darken($primary-color, 10%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}

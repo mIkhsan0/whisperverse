@@ -1,0 +1,89 @@
+<div *ngIf="isLoading$ | async; else contentLoaded" class="loading-indicator initial-load">
+  Memuat data profil...
+</div>
+
+<ng-template #contentLoaded>
+  <div class="edit-profile-container" *ngIf="currentUser"> <h1 class="edit-profile-title">Edit Profil</h1>
+
+    <div class="profile-pic-edit-container">
+      <img
+        [src]="imagePreviewUrl || currentProfileImageUrl || defaultProfilePic"
+        alt="Foto Profil"
+        class="profile-pic-edit"
+        (error)="onProfileImageError($event)">
+      <label for="profilePicUpload" class="edit-pic-btn">
+        <span class="material-icons-outlined">edit</span>
+      </label>
+      <input
+        type="file"
+        id="profilePicUpload"
+        accept="image/*"
+        (change)="onFileSelected($event)"
+        #fileInput
+        style="display: none;">
+    </div>
+    <p class="username-display">{{ username }}</p> <form (ngSubmit)="saveProfile()" #editProfileForm="ngForm" class="edit-profile-form">
+
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          disabled
+          placeholder="Email pengguna">
+      </div>
+
+      <div class="form-field">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          [(ngModel)]="username"
+          required
+          #usernameInput="ngModel"
+          placeholder="Masukkan username baru"
+          [class.invalid-input]="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)">
+        <div *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)" class="error-message">
+          <span *ngIf="usernameInput.errors?.['required']">Username wajib diisi.</span>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password Baru (Opsional)</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="newPassword"
+          minlength="6"
+          #passwordInput="ngModel"
+          placeholder="Isi jika ingin ganti password"
+          [class.invalid-input]="passwordInput.invalid && passwordInput.dirty">
+         <div *ngIf="passwordInput.invalid && passwordInput.dirty" class="error-message">
+          <span *ngIf="passwordInput.errors?.['minlength']">Password baru minimal 6 karakter.</span>
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage && !isSaving" class="error-message general-error"> {{ errorMessage }}
+      </div>
+
+       <div *ngIf="isSaving" class="loading-indicator saving">
+          Menyimpan perubahan...
+        </div>
+
+      <button type="submit" class="btn btn-save" [disabled]="editProfileForm.invalid || isSaving"> Simpan
+      </button>
+       <button type="button" class="btn btn-cancel" (click)="goBack()" [disabled]="isSaving"> Batal
+      </button>
+    </form>
+
+  </div>
+
+  <div *ngIf="!currentUser && !(isLoading$ | async)" class="loading-indicator">
+      Pengguna tidak ditemukan atau tidak login.
+   </div>
+
+</ng-template>

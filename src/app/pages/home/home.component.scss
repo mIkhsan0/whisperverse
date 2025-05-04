@@ -1,0 +1,225 @@
+/* Variabel Warna (sesuaikan) */
+$header-bg: #C4E5EA; // Warna gradient awal atau warna solid
+$header-bg-scrolled: #FFFFFF; // Warna header saat di-scroll (misal putih)
+$primary-dark-color: #323AAE; // purple_600
+$text-color: #222222;
+$text-light-color: #4D5256; // grey_500
+$card-bg: #E3F6F9;
+$card-inner-bg: #FFFFFF;
+$placeholder-color: #BDD3EA;
+$border-color: #CAE8ED;
+$search-bg: #FFFFFF;
+$search-border: #7277D5; // purple_400
+$shadow-color: rgba(0, 0, 0, 0.1);
+
+/* Container Halaman */
+.home-page-container {
+  // Tidak perlu style khusus di sini, biarkan default
+}
+
+/* Header Awal */
+.home-header {
+  background: linear-gradient(120deg, #C4E5EA, #FFFFFF, #FFFFFF); // Mirip bg_gradient_home
+  padding: 40px 20px 20px 20px; // Padding awal (atas lebih besar)
+  position: sticky; // Membuat header bisa menempel
+  top: 0; // Menempel di bagian atas
+  z-index: 100; // Di atas konten lain
+  transition: padding 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  box-shadow: none; // Awalnya tidak ada shadow
+
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, height 0.3s ease-in-out;
+    opacity: 1;
+    max-height: 300px; // Batas tinggi awal
+    overflow: hidden; // Sembunyikan jika terlalu tinggi saat transisi
+
+    .header-logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 8px;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #4A4A4A; // Warna dari XML
+      margin-bottom: 4px;
+    }
+
+    .header-subtitle {
+      font-size: 14px;
+      color: $text-light-color;
+      margin-bottom: 20px; // Jarak sebelum search bar
+    }
+  }
+
+  .search-bar-sticky-container {
+    // Container ini akan selalu ada, tapi posisinya relatif terhadap header
+    padding-top: 10px; // Jarak dari konten header di atasnya
+    transition: padding 0.3s ease-in-out;
+  }
+
+  .search-bar-wrapper {
+      display: flex;
+      align-items: center;
+      background-color: $search-bg;
+      border-radius: 20px; // Mirip search bar XML
+      border: 1px solid $search-border; // Border ungu
+      padding: 5px 5px 5px 15px; // Padding kiri lebih besar untuk ikon
+      max-width: 350px; // Batasi lebar search bar
+      margin: 0 auto; // Pusatkan search bar
+      box-shadow: 0 2px 4px $shadow-color;
+
+      .search-icon {
+          color: $primary-dark-color;
+          margin-right: 8px;
+      }
+
+      .search-input {
+        border: none;
+        outline: none;
+        flex-grow: 1;
+        font-size: 16px;
+        background-color: transparent;
+        padding: 8px 5px; // Padding internal input
+        color: $text-color;
+
+        &::placeholder {
+            color: $text-light-color;
+            opacity: 0.8;
+        }
+      }
+  }
+
+  /* Style Header Saat di-scroll */
+  &.scrolled {
+    padding: 10px 20px; // Padding lebih kecil
+    background: $header-bg-scrolled; // Background jadi putih
+    box-shadow: 0 2px 5px $shadow-color; // Tambahkan shadow
+
+    .header-content {
+      opacity: 0; // Sembunyikan konten header awal
+      max-height: 0; // Kecilkan tinggi agar tidak makan tempat
+      margin-bottom: 0; // Hapus margin bawahnya
+      pointer-events: none; // Agar tidak bisa diklik
+    }
+
+    .search-bar-sticky-container {
+        padding-top: 0; // Hapus padding atas search bar
+    }
+  }
+}
+
+/* Konten Utama */
+.main-content {
+  padding: 20px; // Padding agar tidak tertutup header awal/nav bawah
+  // Tidak perlu padding-top besar karena header sticky
+}
+
+/* Gaya Message Grid & Card (Sama seperti sebelumnya) */
+h2 {
+  text-align: center;
+  color: $text-color;
+  margin-bottom: 15px;
+}
+
+.message-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.message-card {
+  background-color: $card-bg;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 2px 4px $shadow-color;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-header {
+    text-align: center;
+    font-weight: bold;
+    color: $text-color;
+    font-size: 14px;
+    margin-bottom: 8px;
+    word-break: break-all;
+  }
+
+  .card-body {
+    background-color: $card-inner-bg;
+    border-radius: 12px;
+    padding: 10px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 150px;
+  }
+
+  .message-image {
+    display: block;
+    width: 100%;
+    max-height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+
+  .image-placeholder {
+      width: 100%;
+      height: 100px;
+      background-color: $placeholder-color;
+      display: flex; // Awalnya flex untuk centering ikon
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      color: $card-inner-bg;
+
+      // Sembunyikan jika ada gambar (ditangani onImageError)
+      // display: none; // Hapus ini jika onImageError yang menangani
+
+      .material-icons-outlined {
+          font-size: 40px;
+      }
+  }
+
+
+  .message-snippet {
+    font-size: 14px;
+    color: $text-color;
+    text-align: center;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+    margin-top: auto;
+  }
+
+  .card-footer {
+      margin-top: 8px;
+      text-align: center;
+      font-size: 10px;
+      color: darken($text-color, 20%);
+  }
+}
+
+.loading-indicator, .no-messages {
+  text-align: center;
+  padding: 30px;
+  color: $text-light-color;
+  font-style: italic;
+}

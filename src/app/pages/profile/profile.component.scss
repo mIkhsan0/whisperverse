@@ -1,0 +1,157 @@
+/* Variabel Warna (sesuaikan) */
+$primary-color: #7077D6; // purple_400
+$primary-dark-color: #323AAE; // purple_600
+$accent-color: #578FCA; // blue_500
+$text-color: #000000;
+$text-light-color: #4D5256; // grey_500
+$background-color: #FFFFFF;
+$input-border-color: #323AAE; // purple_600
+$logout-btn-bg: #191D57; // purple_800
+$edit-btn-bg: #7077D6; // purple_400 (sama dengan primary)
+$profile-pic-border: #B6BBBE; // grey_200
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  background-color: $background-color;
+  min-height: calc(100vh - 60px); /* Tinggi viewport - nav bawah */
+  box-sizing: border-box;
+}
+
+.profile-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: $accent-color;
+  margin-bottom: 16px;
+}
+
+.profile-pic-container {
+  position: relative; // Untuk positioning tombol edit (opsional)
+  margin-bottom: 16px;
+}
+
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%; // Membuat gambar bulat
+  object-fit: cover; // Memastikan gambar mengisi area tanpa distorsi
+  border: 2px solid $profile-pic-border; // Border tipis
+  background-color: $profile-pic-border; // Background jika gambar transparan
+}
+
+/* Tombol edit kecil di atas gambar (opsional) */
+// .edit-pic-btn {
+//   position: absolute;
+//   bottom: 5px;
+//   right: 5px;
+//   background-color: rgba(0, 0, 0, 0.5);
+//   color: white;
+//   border: none;
+//   border-radius: 50%;
+//   width: 32px;
+//   height: 32px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   padding: 0;
+
+//   .material-icons-outlined {
+//     font-size: 18px;
+//   }
+// }
+
+.post-count {
+  font-size: 16px;
+  font-weight: bold;
+  color: $primary-dark-color;
+  margin-bottom: 24px;
+}
+
+.info-section {
+  width: 100%;
+  max-width: 450px; // Batasi lebar info section
+  margin-bottom: 32px;
+}
+
+.info-field {
+  margin-bottom: 16px;
+
+  label {
+    display: block;
+    font-size: 14px;
+    color: $primary-dark-color;
+    margin-bottom: 4px;
+  }
+
+  .info-value {
+    background-color: transparent; // Mirip display_field_background
+    border: 1px solid $input-border-color;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: $primary-dark-color; // Warna teks sama dengan border
+    word-break: break-all; // Agar email panjang tidak overflow
+  }
+}
+
+.action-buttons {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column; // Tombol tersusun vertikal
+  gap: 16px; // Jarak antar tombol
+}
+
+/* Tombol Umum */
+.btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  text-transform: none;
+  color: $background-color; // Teks putih untuk kedua tombol
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-edit {
+  background-color: $edit-btn-bg;
+   &:hover:not(:disabled) {
+    background-color: darken($edit-btn-bg, 10%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.btn-logout {
+  background-color: $logout-btn-bg;
+   &:hover:not(:disabled) {
+    background-color: darken($logout-btn-bg, 10%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Loading Indicator */
+.loading-indicator {
+  text-align: center;
+  margin-bottom: 16px;
+  color: $primary-dark-color;
+  font-style: italic;
+
+  &.initial-load { // Gaya khusus untuk loading awal
+      margin-top: 50px;
+      font-size: 1.1rem;
+  }
+  &.saving { // Gaya untuk loading saat simpan
+      // Bisa tambahkan gaya berbeda jika perlu
+  }
+}

@@ -1,0 +1,175 @@
+/* Variabel Warna (sesuaikan) */
+$primary-color: #7077D6; // purple_400
+$primary-dark-color: #323AAE; // purple_600
+$accent-color: #4A6ECF; // Warna judul "Pesan Untukmu"
+$text-color: #222222;
+$background-color: #FFFFFF;
+$card-bg: #E3F6F9; // Warna biru muda dari card
+$card-inner-bg: #FFFFFF;
+$delete-btn-bg: #1C3A59; // blue_800
+$back-btn-bg: #4D55CC; // purple_500
+$placeholder-text-color: #6c757d; // Abu-abu untuk placeholder
+$text-light-color: #4D5256;
+$error-color: #D32F2F;
+
+.detail-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  background-color: $background-color;
+  min-height: calc(100vh - 60px); /* Tinggi viewport - nav bawah */
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 480px; // Batasi lebar container
+  margin: 0 auto;   // Tengah-kan di halaman
+}
+
+.detail-logo {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 12px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.detail-title {
+    font-size: 22px;
+    color: $accent-color;
+    font-weight: bold;
+    margin-bottom: 28px;
+    text-align: center;
+}
+
+.message-detail-card {
+  background-color: $card-bg;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 550px; // Batasi lebar kartu
+  margin-bottom: 24px;
+  box-sizing: border-box; // Pastikan padding tidak menambah lebar total
+
+  .card-header {
+    text-align: center;
+    font-weight: bold;
+    color: $text-color;
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .card-body {
+    background-color: $card-inner-bg; // Inner card putih
+    border-radius: 16px; // Corner radius inner card
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; // Pusatkan konten
+  }
+
+  .message-image-detail {
+    display: block;
+    max-width: 100%; // Gambar mengisi lebar card body
+    max-height: 350px; // Batasi tinggi gambar
+    object-fit: contain; // Tampilkan seluruh gambar
+    border-radius: 12px; // Corner radius gambar
+    margin-bottom: 16px;
+    background-color: #eee; // Background jika gambar transparan
+  }
+
+  .image-placeholder-detail {
+      width: 100%;
+      min-height: 100px; // Tinggi minimal placeholder
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f8f9fa;
+      border: 1px dashed #dee2e6;
+      border-radius: 12px;
+      color: $placeholder-text-color;
+      font-style: italic;
+      margin-bottom: 16px;
+  }
+
+  .message-text-detail {
+    font-size: 16px;
+    color: $text-color;
+    text-align: center;
+    line-height: 1.6; // Jarak baris
+    white-space: pre-wrap; // Jaga spasi dan baris baru dari teks asli
+    word-break: break-word; // Pecah kata jika perlu
+  }
+
+   .card-footer {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: darken($text-color, 30%);
+  }
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column; // Tombol vertikal
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 12px; // Jarak antar tombol
+  width: 100%;
+  max-width: 300px; // Batasi lebar tombol
+}
+
+/* Tombol Umum */
+.btn {
+  width: 100%;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  text-transform: none;
+  color: #FFFFFF; // Teks putih
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-delete {
+  background-color: $delete-btn-bg;
+  &:hover:not(:disabled) {
+    background-color: darken($delete-btn-bg, 10%);
+  }
+}
+
+.btn-back {
+  background-color: $back-btn-bg;
+   &:hover:not(:disabled) {
+    background-color: darken($back-btn-bg, 10%);
+  }
+}
+
+.status-indicator {
+  margin-top: 50px;
+  font-style: italic;
+  color: $text-light-color;
+  text-align: center;
+
+  &.error {
+    color: $error-color;
+    font-style: normal;
+    font-weight: 500;
+  }
+  // Tombol kembali di dalam error message
+  .btn-back {
+      margin-top: 15px;
+      width: auto; // Lebar otomatis
+      padding: 8px 25px;
+  }
+}

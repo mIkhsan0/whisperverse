@@ -1,0 +1,66 @@
+/* Variabel Warna (sesuaikan jika perlu) */
+$primary-color: #7077D6; // purple_400
+$text-color: #000000;
+$background-color: #FFFFFF;
+$icon-bg-color: #BDD3EA; // Warna dari ic_smiley_cloud_2.xml
+
+/* Container utama */
+.success-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; // Pusatkan konten secara vertikal
+  min-height: 100vh; // Isi seluruh tinggi viewport
+  padding: 24px;
+  background-color: $background-color;
+  text-align: center; // Pusatkan teks
+  box-sizing: border-box;
+}
+
+/* Ikon Sukses */
+.success-icon {
+  width: 100px; // Ukuran ikon bisa disesuaikan
+  height: auto; // Biarkan tinggi menyesuaikan
+  margin-bottom: 24px;
+  // Jika SVG Anda tidak punya background, tambahkan di sini:
+  // background-color: $icon-bg-color;
+  // border-radius: 50%; // Contoh jika ingin background bulat
+  // padding: 10px;
+}
+
+/* Pesan Sukses */
+.success-message {
+  font-size: 18px;
+  color: $text-color;
+  margin-bottom: 32px;
+  max-width: 400px; // Batasi lebar teks
+  line-height: 1.5; // Jarak antar baris
+}
+
+/* Tombol Umum (bisa ambil dari gaya lain atau definisikan ulang) */
+.btn {
+  padding: 12px 32px; // Padding horizontal lebih besar
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  text-transform: none;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/* Tombol Primary (Kembali ke Home) */
+.btn-primary {
+  background-color: $primary-color;
+  color: $background-color;
+
+  &:hover:not(:disabled) {
+    background-color: darken($primary-color, 10%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}

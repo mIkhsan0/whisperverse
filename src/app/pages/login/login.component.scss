@@ -1,0 +1,212 @@
+/* Variabel Warna (sesuaikan dari colors.xml Anda) */
+$primary-color: #7077D6; // purple_400
+$primary-dark-color: #323AAE; // purple_600
+$accent-color: #578FCA; // blue_500
+$text-color: #000000;
+$text-light-color: #4D5256; // grey_500
+$background-color: #FFFFFF;
+$input-border-color: #323AAE; // purple_600
+$error-color: #D32F2F; // Warna merah untuk error
+$google-btn-stroke: #7077D6;
+$divider-color: #B6BBBE; // grey_200
+
+/* Container utama */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px;
+  background-color: $background-color;
+  box-sizing: border-box; /* Include padding in height calculation */
+}
+
+/* Ikon maskot */
+.mascot-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 8px;
+}
+
+/* Judul */
+.login-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: $accent-color;
+  margin-bottom: 8px;
+}
+
+/* Subjudul */
+.login-subtitle {
+  font-size: 12px;
+  color: $text-color;
+  text-align: center;
+  margin-bottom: 32px;
+  max-width: 300px; /* Batasi lebar agar tidak terlalu panjang */
+}
+
+/* Form */
+.login-form {
+  width: 100%;
+  max-width: 400px; /* Batasi lebar form */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Field dalam form */
+.form-field {
+  margin-bottom: 16px;
+  width: 100%;
+
+  label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: $primary-dark-color;
+    font-weight: 500;
+  }
+
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid $input-border-color;
+    border-radius: 12px; // Mirip edit_text_background_create
+    font-size: 14px;
+    box-sizing: border-box; /* Include padding and border in width */
+    background-color: transparent;
+    color: $text-color;
+
+    &::placeholder {
+      color: $primary-dark-color;
+      opacity: 0.7;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: darken($input-border-color, 10%);
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+  }
+   /* Style untuk input yang tidak valid */
+   .invalid-input {
+    border-color: $error-color;
+  }
+}
+
+/* Pesan error */
+.error-message {
+  color: $error-color;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.general-error {
+  margin-bottom: 10px; // Beri jarak sebelum link lupa password
+  text-align: center;
+}
+
+
+/* Link Lupa Password */
+.forgot-password-link {
+  align-self: flex-end;
+  font-size: 14px;
+  color: $text-color;
+  text-decoration: none;
+  margin-bottom: 24px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Tombol Umum */
+.btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px; // Mirip button_background_create
+  font-size: 16px; // Sedikit lebih besar dari XML (20sp terlalu besar untuk web)
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  text-transform: none; // Mirip android:textAllCaps="false"
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/* Tombol Primary (Sign In Email) */
+.btn-primary {
+  background-color: $primary-color;
+  color: $background-color;
+
+  &:hover:not(:disabled) {
+    background-color: darken($primary-color, 10%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 24px 0;
+
+  &::before, &::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    background-color: $divider-color;
+  }
+}
+
+.divider-text {
+  padding: 0 12px;
+  font-size: 12px;
+  color: $text-light-color;
+}
+
+/* Tombol Google */
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $background-color;
+  color: $primary-color;
+  border: 1px solid $google-btn-stroke;
+  border-radius: 8px; // Mirip XML
+  margin-bottom: 32px; // Jarak sebelum link sign up
+  max-width: 400px; // Batasi lebar tombol
+
+  .google-logo {
+    width: 18px; // Sesuaikan ukuran logo
+    height: 18px;
+    margin-right: 8px;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: lighten($google-btn-stroke, 35%);
+  }
+}
+
+/* Link Sign Up */
+.signup-link {
+  font-size: 14px;
+  color: $text-color;
+  text-align: center;
+
+  a {
+    color: $accent-color;
+    font-weight: bold;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

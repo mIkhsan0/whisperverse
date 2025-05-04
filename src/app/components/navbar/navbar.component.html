@@ -1,0 +1,31 @@
+<nav class="top-navbar">
+    <div class="navbar-container">
+      <a routerLink="/home" class="navbar-brand">
+        <img src="assets/ic_smiley_cloud_2.svg" alt="WhisperVerse Logo" class="navbar-logo">
+        <span>WhisperVerse</span>
+      </a>
+  
+      <div class="navbar-links">
+        <a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Home</a>
+        <a routerLink="/create" routerLinkActive="active-link">Create</a>
+        <a routerLink="/profile" routerLinkActive="active-link">Profile</a>
+      </div>
+  
+      <div class="navbar-actions">
+        <button class="btn btn-logout-navbar" (click)="logout()"> Logout
+        </button>
+      </div>
+  
+       <button class="navbar-toggler" (click)="toggleMobileMenu()">
+          <span class="material-icons-outlined">menu</span>
+       </button>
+    </div>
+  
+     <div class="mobile-menu" [class.open]="isMobileMenuOpen">
+        <a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobileMenu()">Home</a>
+        <a routerLink="/create" routerLinkActive="active-link" (click)="closeMobileMenu()">Create</a>
+        <a routerLink="/profile" routerLinkActive="active-link" (click)="closeMobileMenu()">Profile</a>
+        <button class="btn btn-logout-mobile" (click)="logout()">Logout</button>
+     </div>
+  </nav>
+  

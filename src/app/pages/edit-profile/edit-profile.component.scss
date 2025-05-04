@@ -1,0 +1,206 @@
+/* Variabel Warna (sesuaikan) */
+$primary-color: #7077D6; // purple_400
+$primary-dark-color: #323AAE; // purple_600
+$accent-color: #578FCA; // blue_500
+$text-color: #000000;
+$text-light-color: #4D5256; // grey_500
+$background-color: #FFFFFF;
+$input-border-color: #323AAE; // purple_600
+$error-color: #D32F2F;
+$save-btn-bg: #7077D6; // purple_400
+$cancel-btn-bg: #6c757d; // Warna abu-abu untuk batal
+$profile-pic-border: #B6BBBE; // grey_200
+
+.edit-profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  background-color: $background-color;
+  min-height: calc(100vh - 60px); /* Tinggi viewport - nav bawah */
+  box-sizing: border-box;
+}
+
+.edit-profile-title {
+  font-size: 26px;
+  font-weight: bold;
+  color: $accent-color; // Atau $primary-dark-color
+  margin-bottom: 20px;
+}
+
+.profile-pic-edit-container {
+  position: relative; // Untuk positioning tombol edit
+  margin-bottom: 8px; // Jarak ke username
+}
+
+.profile-pic-edit {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid $profile-pic-border;
+  background-color: $profile-pic-border; // Background jika gambar transparan
+}
+
+.edit-pic-btn {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  background-color: rgba($primary-dark-color, 0.8); // Background semi-transparan
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+  .material-icons-outlined {
+    font-size: 18px;
+  }
+
+  &:hover {
+      background-color: rgba($primary-dark-color, 1);
+  }
+}
+
+.username-display {
+    font-size: 16px;
+    color: $primary-dark-color;
+    margin-bottom: 24px;
+    font-weight: 500;
+}
+
+
+.edit-profile-form {
+  width: 100%;
+  max-width: 450px; // Sesuaikan lebar form
+  display: flex;
+  flex-direction: column;
+}
+
+/* Field dalam form */
+.form-field {
+  margin-bottom: 16px;
+  width: 100%;
+
+  label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: $primary-dark-color;
+    font-weight: 500;
+  }
+
+  input[type="email"],
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid $input-border-color;
+    border-radius: 12px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background-color: transparent;
+    color: $text-color;
+
+    &::placeholder {
+      color: $primary-dark-color;
+      opacity: 0.7;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: darken($input-border-color, 10%);
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+
+    &:disabled { // Style untuk input email yang disabled
+        background-color: #e9ecef; // Background abu-abu muda
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+  }
+
+   /* Style untuk input yang tidak valid */
+   .invalid-input {
+    border-color: $error-color;
+  }
+}
+
+/* Pesan error */
+.error-message {
+  color: $error-color;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.general-error {
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    text-align: center;
+    margin-bottom: 16px;
+    color: $primary-dark-color;
+    font-style: italic;
+}
+
+
+/* Tombol Umum */
+.btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  text-transform: none;
+  color: $background-color;
+  margin-top: 8px; // Jarak antar tombol jika ada
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-save {
+  background-color: $save-btn-bg;
+   &:hover:not(:disabled) {
+    background-color: darken($save-btn-bg, 10%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.btn-cancel {
+    background-color: $cancel-btn-bg;
+    &:hover:not(:disabled) {
+        background-color: darken($cancel-btn-bg, 10%);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Loading Indicator */
+.loading-indicator {
+  text-align: center;
+  margin-bottom: 16px;
+  color: $primary-dark-color;
+  font-style: italic;
+
+  &.initial-load { // Gaya khusus untuk loading awal
+      margin-top: 50px;
+      font-size: 1.1rem;
+  }
+  &.saving { // Gaya untuk loading saat simpan
+      // Bisa tambahkan gaya berbeda jika perlu
+  }
+}

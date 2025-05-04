@@ -1,0 +1,63 @@
+<div class="detail-container">
+
+  <div *ngIf="isLoading$ | async" class="status-indicator">
+    Memuat pesan...
+  </div>
+
+  <ng-container *ngIf="!(isLoading$ | async)">
+
+    <ng-container *ngIf="message$ | async as message; else errorOrNotFound">
+
+      <div class="message-content">
+        <img src="assets/ic_smiley_cloud_2.svg" alt="Logo WhisperVerse" class="detail-logo">
+        <h1 class="detail-title">Pesan Untukmu</h1>
+
+        <div class="message-detail-card">
+          <div class="card-header">
+            To: {{ message.recipient }}
+          </div>
+          <div class="card-body">
+            <img *ngIf="message.imageUrl"
+                 [src]="message.imageUrl"
+                 alt="Gambar Pesan"
+                 class="message-image-detail"
+                 (error)="onImageError($event)">
+            <div *ngIf="!message.imageUrl" class="image-placeholder-detail">
+                Gambar tidak tersedia
+            </div>
+
+            <p class="message-text-detail">
+              {{ message.snippet }}
+            </p>
+          </div>
+          <div class="card-footer" *ngIf="message.timestamp">
+            <small>Dikirim: {{ message.timestamp?.toDate() | date:'medium' }}</small>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button *ngIf="isSender$ | async" class="btn btn-delete" (click)="deleteMessage()">
+            Hapus Pesan
+          </button>
+          <button class="btn btn-back" (click)="goBack()">
+            Halaman utama
+          </button>
+        </div>
+      </div>
+
+    </ng-container>
+
+  </ng-container>
+
+  <ng-template #errorOrNotFound>
+    <div *ngIf="!(isLoading$ | async) && (errorMessage$ | async) as errorMsg" class="status-indicator error">
+      {{ errorMsg }}
+      <button class="btn btn-back" (click)="goBack()">Kembali</button>
+    </div>
+    <div *ngIf="!(isLoading$ | async) && (errorMessage$ | async) && !(message$ | async)" class="status-indicator">
+       Pesan tidak dapat ditemukan atau ID tidak valid.
+       <button class="btn btn-back" (click)="goBack()">Kembali</button>
+     </div>
+  </ng-template>
+
+</div>
