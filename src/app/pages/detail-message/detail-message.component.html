@@ -49,7 +49,7 @@
             <span class="time-display">{{ currentTime | formatTime }} / {{ duration | formatTime }}</span>
           </div>
         </div>
-        <div class="polaroid-card song-card placeholder-card" *ngIf="message.imageUrl && !message.songName">
+        <div class="polaroid-card song-card placeholder-card" *ngIf="!message.songName">
             <div class="image-placeholder-detail">
                 Tidak ada lagu dipilih
             </div>
