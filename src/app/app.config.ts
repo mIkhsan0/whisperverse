@@ -1,6 +1,8 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+
 import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
@@ -25,6 +27,9 @@ export const appConfig: ApplicationConfig = {
     provideFirebaseApp(() => initializeApp({ projectId: "testdb-apps", appId: "1:826407458596:web:60af07e0008018e5b145b1", storageBucket: "testdb-apps.firebasestorage.app", apiKey: "AIzaSyDJKVEV-r7ahnn4jm9kZbA_XT1yE13c5Fs", authDomain: "testdb-apps.firebaseapp.com", messagingSenderId: "826407458596", measurementId: "G-12L6FDZFR5" })), 
     provideAuth(() => getAuth()), 
     provideAnalytics(() => getAnalytics()), 
+    provideHttpClient(
+      withInterceptorsFromDi() // <-- Gunakan ini untuk mendukung interceptor berbasis DI lama
+    ),
     ScreenTrackingService, 
     UserTrackingService, 
     // provideAppCheck(() => {
