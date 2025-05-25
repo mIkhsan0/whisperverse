@@ -12,128 +12,269 @@ $placeholder-text-color: #6c757d; // Abu-abu untuk placeholder
 $text-light-color: #4D5256;
 $error-color: #D32F2F;
 
+$page-bg-detail: #FDFDFE; // Warna latar putih gading (sama seperti create)
+$title-detail-color: #4A55A2; // Ungu tua/biru tua untuk judul utama (sama seperti create)
+$text-color-detail: #333333;
+$recipient-color-detail: #555555;
+$polaroid-bg: #FFFFFF;
+$polaroid-shadow: rgba(0, 0, 0, 0.1);
+$button-main-bg: #89CFF0; // Biru muda untuk "Halaman Utama" (contoh)
+$button-main-text: #FFFFFF;
+$button-delete-bg: #323AAE; // Biru tua untuk "Hapus" (sama dengan $primary-dark-color)
+$button-delete-text: #FFFFFF;
+$snippet-title-color: #4A55A2; // Warna untuk "Pesan Untukmu:"
+
 .detail-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 24px;
-  background-color: $background-color;
+  background-color: $page-bg-detail;
   min-height: calc(100vh - 60px); /* Tinggi viewport - nav bawah */
   box-sizing: border-box;
-  width: 100%;
-  max-width: 480px; // Batasi lebar container
-  margin: 0 auto;   // Tengah-kan di halaman
 }
 
-.detail-logo {
-    width: 72px;
-    height: 72px;
-    margin-bottom: 12px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+.detail-page-title {
+  font-size: 26px;
+  font-weight: bold;
+  color: $title-detail-color;
+  margin-bottom: 28px;
+  text-align: center;
+  margin-top: 20px;
 }
 
-.detail-title {
-    font-size: 22px;
-    color: $accent-color;
-    font-weight: bold;
-    margin-bottom: 28px;
-    text-align: center;
+/* Kontainer untuk dua kartu polaroid */
+.polaroid-cards-container {
+  display: flex;
+  justify-content: center; // Pusatkan kartu jika hanya satu atau ada sisa ruang
+  align-items: flex-start; // Jaga bagian atas kartu sejajar
+  gap: 20px; // Jarak antar kartu
+  flex-wrap: wrap; // Agar kartu turun jika tidak cukup ruang
+  margin-bottom: 32px;
+  max-width: 700px; // Sesuaikan lebar maksimum kontainer kartu
 }
 
-.message-detail-card {
-  background-color: $card-bg;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 550px; // Batasi lebar kartu
-  margin-bottom: 24px;
-  box-sizing: border-box; // Pastikan padding tidak menambah lebar total
+.polaroid-card {
+  background-color: $polaroid-bg;
+  border-radius: 8px; // Sedikit rounded
+  padding: 15px;
+  transition: transform 0.3s ease-out;
+  padding-bottom: 20px; // Lebih banyak padding bawah untuk tampilan polaroid
+  box-shadow: 0 4px 8px $polaroid-shadow;
+  width: calc(50% - 10px); // Untuk dua kartu berdampingan, dikurangi setengah gap
+  min-width: 280px; // Lebar minimum kartu
+  min-height: 280px; // Tinggi minimum kartu
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
-  .card-header {
-    text-align: center;
-    font-weight: bold;
-    color: $text-color;
-    font-size: 16px;
-    margin-bottom: 12px;
+  &.text-card {
+    // Styling khusus kartu teks jika perlu
+    min-height: 250px; // Sesuaikan
   }
 
-  .card-body {
-    background-color: $card-inner-bg; // Inner card putih
-    border-radius: 16px; // Corner radius inner card
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center; // Pusatkan konten
+  &.image-card {
+    // Styling khusus kartu gambar jika perlu
+    min-height: 280px; // Sesuaikan
+    transform: rotate(-2deg);
+    &:hover {
+      transform: rotate(-0.5deg) scale(1.02); // Sedikit tegak dan membesar saat hover (opsional)
+    }
   }
 
-  .message-image-detail {
-    display: block;
-    max-width: 100%; // Gambar mengisi lebar card body
-    max-height: 350px; // Batasi tinggi gambar
-    object-fit: contain; // Tampilkan seluruh gambar
-    border-radius: 12px; // Corner radius gambar
-    margin-bottom: 16px;
-    background-color: #eee; // Background jika gambar transparan
+  &.song-card {
+    min-height: 280px;
+    transform: rotate(2deg);
+    &:hover {
+      transform: rotate(0.5deg) scale(1.02); // Sedikit tegak dan membesar saat hover (opsional)
+    }
+
+    .song-art-container { // Wrapper untuk album art/placeholder
+        width: 100%;
+        height: 180px; // Samakan dengan gambar utama jika ada
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f0f0;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        overflow: hidden; // Jika album art menggunakan img
+    }
+    .song-album-art {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image-placeholder-detail.song-art-placeholder {
+      height: 180px; // Samakan tinggi dengan .polaroid-content-image
+      // style lain untuk placeholder album art
+      .material-icons-outlined { // Untuk ikon musik besar
+        font-size: 60px; // Sesuaikan
+        color: #ccc; // Warna ikon placeholder
+      }
+    }
+    .song-info-detail {
+      padding-bottom: 0; // Agar tidak ada double padding jika padding-bottom sudah ada di .polaroid-card
+    }
+    
+    .audio-player-controls {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 8px 0; // Padding atas bawah untuk kontrol
+      // background-color: rgba(0,0,0,0.05); // Latar belakang soft jika perlu
+      // border-top: 1px solid #eee; // Pemisah jika perlu
+
+      .play-pause-btn {
+        background: none;
+        border: none;
+        color: $title-detail-color; // Warna ikon play/pause
+        cursor: pointer;
+        padding: 5px;
+        margin-right: 10px;
+        svg {
+          width: 24px; // Ukuran ikon play/pause
+          height: 24px;
+        }
+      }
+
+      .progress-bar-container {
+        flex-grow: 1;
+        height: 6px;
+        background-color: #ddd; // Warna track progress bar
+        border-radius: 3px;
+        cursor: pointer;
+        margin-right: 10px;
+        overflow: hidden; // Agar progress bar tidak keluar dari radius
+
+        .progress-bar {
+          height: 100%;
+          background-color: $title-detail-color; // Warna progress
+          border-radius: 3px;
+          width: 0%; // Diatur oleh [style.width.%]
+          transition: width 0.1s linear; // Transisi halus (opsional)
+        }
+      }
+
+      .time-display {
+        font-size: 11px;
+        color: $recipient-color-detail;
+        min-width: 60px; // Agar layout stabil
+        text-align: right;
+      }
+    }
+  }
+
+  &.placeholder-card { // Untuk kartu yang hanya placeholder
+    .image-placeholder-detail {
+        height: 180px; // Atau tinggi yang sesuai
+        // style lain jika perlu
+    }
+  }
+
+  .polaroid-content-image {
+    width: 100%;
+    height: 200px; // Sesuaikan tinggi gambar
+    object-fit: cover;
+    border-radius: 4px; // Sedikit rounded untuk gambar di dalam
+    margin-bottom: 10px;
+    background-color: #f0f0f0; // Placeholder bg color
   }
 
   .image-placeholder-detail {
-      width: 100%;
-      min-height: 100px; // Tinggi minimal placeholder
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f8f9fa;
-      border: 1px dashed #dee2e6;
-      border-radius: 12px;
-      color: $placeholder-text-color;
-      font-style: italic;
-      margin-bottom: 16px;
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e9ecef;
+    color: #adb5bd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-style: italic;
   }
 
-  .message-text-detail {
-    font-size: 16px;
-    color: $text-color;
-    text-align: center;
-    line-height: 1.6; // Jarak baris
-    white-space: pre-wrap; // Jaga spasi dan baris baru dari teks asli
-    word-break: break-word; // Pecah kata jika perlu
+  .polaroid-recipient {
+    margin-top: auto;
+    padding-top: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    color: $recipient-color-detail;
+    text-align: center; // Atau center sesuai desain
   }
 
-   .card-footer {
-      margin-top: 16px;
-      text-align: center;
+  .song-info-detail {
+    margin-top: 8px;
+    text-align: center; // Atau left
+
+    .song-title-detail {
+      font-size: 14px;
+      font-weight: bold;
+      color: $text-color-detail;
+      display: block;
+    }
+
+    .song-artist-detail {
       font-size: 12px;
-      color: darken($text-color, 30%);
+      color: $recipient-color-detail;
+      display: block;
+    }
+
+    .song-duration {
+      font-size: 11px;
+      color: $recipient-color-detail;
+      text-align: right;
+      margin-top: 4px;
+      display: block;
+    }
   }
 }
 
+/* Judul untuk cuplikan pesan di bawah kartu */
+.snippet-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: $snippet-title-color; // Warna dari create page
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+/* Cuplikan pesan utama di bawah kartu */
+.main-snippet-text {
+  font-size: 15px;
+  color: $text-color-detail;
+  text-align: center;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 28px;
+  max-width: 500px;
+}
+
+ /* Tombol Aksi */
 .action-buttons {
   display: flex;
-  flex-direction: column; // Tombol vertikal
+  flex-direction: row; // Tombol horizontal
   align-items: center;
   justify-content: center;
-  margin-left: auto;
-  margin-right: auto;
-  gap: 12px; // Jarak antar tombol
+  gap: 16px; // Jarak antar tombol
   width: 100%;
-  max-width: 300px; // Batasi lebar tombol
+  max-width: 400px; // Sesuaikan
+  margin-top: 20px;
 }
 
-/* Tombol Umum */
-.btn {
-  width: 100%;
+.btn { // Gaya tombol umum
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
-  text-transform: none;
-  color: #FFFFFF; // Teks putih
+  text-transform: none; // Biasanya tombol tidak uppercase semua
+  min-width: 150px; // Lebar minimum tombol
 
   &:disabled {
     opacity: 0.6;
@@ -141,20 +282,24 @@ $error-color: #D32F2F;
   }
 }
 
-.btn-delete {
-  background-color: $delete-btn-bg;
-  &:hover:not(:disabled) {
-    background-color: darken($delete-btn-bg, 10%);
-  }
-}
-
 .btn-back {
-  background-color: $back-btn-bg;
-   &:hover:not(:disabled) {
-    background-color: darken($back-btn-bg, 10%);
+  background-color: $button-main-bg;
+  color: $button-main-text;
+  border: 1px solid darken($button-main-bg, 10%); // Border jika perlu
+  &:hover:not(:disabled) {
+    background-color: darken($button-main-bg, 10%);
   }
 }
 
+.btn-delete {
+  background-color: $button-delete-bg;
+  color: $button-delete-text;
+  &:hover:not(:disabled) {
+    background-color: darken($button-delete-bg, 10%);
+  }
+}
+
+/* Indikator loading dan error tetap sama */
 .status-indicator {
   margin-top: 50px;
   font-style: italic;
@@ -162,14 +307,24 @@ $error-color: #D32F2F;
   text-align: center;
 
   &.error {
-    color: $error-color;
+    color: $error-color; // Sudah ada
     font-style: normal;
     font-weight: 500;
   }
-  // Tombol kembali di dalam error message
-  .btn-back {
+  .btn-back-error { // Tombol kembali di dalam error message
       margin-top: 15px;
-      width: auto; // Lebar otomatis
+      width: auto;
       padding: 8px 25px;
+      background-color: $primary-color; // Samakan dengan tombol lain
+      color: white;
+       &:hover:not(:disabled) {
+        background-color: darken($primary-color, 10%);
+      }
   }
+}
+
+// Sembunyikan logo default & judul "Pesan Untukmu" dari .message-content jika sudah ada judul halaman
+.message-content > .detail-logo,
+.message-content > .detail-title {
+  display: none;
 }

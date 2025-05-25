@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Pipe, PipeTransform } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of, combineLatest, BehaviorSubject } from 'rxjs'; // Import combineLatest
@@ -11,10 +11,27 @@ import { Auth, user, User } from '@angular/fire/auth';
 // Import interface Message
 import { Message } from '../../models/message.model'; // Sesuaikan path
 
+// Pipe untuk format waktu
+@Pipe({
+  name: 'formatTime',
+  standalone: true // Jika menggunakan Angular 14+
+})
+  
+export class FormatTimePipe implements PipeTransform {
+  transform(value: number): string {
+    if (isNaN(value) || value === Infinity) {
+      return '0:00';
+    }
+    const minutes: number = Math.floor(value / 60);
+    const seconds: number = Math.floor(value % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  }
+}
+
 @Component({
   selector: 'app-detail-message',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule, FormatTimePipe],
   templateUrl: './detail-message.component.html',
   styleUrls: ['./detail-message.component.scss']
 })
@@ -43,8 +60,15 @@ export class DetailMessageComponent implements OnInit {
   isLoading$: Observable<boolean>; // Track loading state as Observable<boolean>
   private _isLoading = new BehaviorSubject<boolean>(false); // Internal loading state
 
+  @ViewChild('audioPlayer') audioPlayerRef!: ElementRef<HTMLAudioElement>;
+  audioPlayer!: HTMLAudioElement;
 
-  constructor() {
+  isPlaying = false;
+  duration = 0;
+  currentTime = 0;
+  audioProgress = 0;
+
+  constructor(private cdr: ChangeDetectorRef) {
     console.log("DetailMessageComponent: Constructor - Initializing streams");
 
     // 1. Stream untuk mendapatkan messageId dari route
@@ -121,6 +145,77 @@ export class DetailMessageComponent implements OnInit {
      this.errorMessage$ = this._errorMessage.asObservable();
   }
 
+  // Method untuk menginisialisasi audio player
+  ngAfterViewInit(): void {
+    // Pastikan audioPlayerRef sudah terdefinisi setelah view init
+    if (this.audioPlayerRef) {
+        this.audioPlayer = this.audioPlayerRef.nativeElement;
+    }
+  }
+
+  // Panggil ini setelah message$ stream mendapatkan data lagu
+  // Misalnya di dalam subscribe message$ atau setelah *ngIf memastikan elemen ada
+  setupAudioPlayer(): void {
+    if (this.audioPlayerRef) {
+      this.audioPlayer = this.audioPlayerRef.nativeElement;
+    } else {
+      // Coba lagi setelah beberapa saat jika ViewChild belum siap
+      setTimeout(() => {
+        if (this.audioPlayerRef) {
+            this.audioPlayer = this.audioPlayerRef.nativeElement;
+        }
+      }, 100);
+    }
+  }
+
+  onAudioLoadedMetadata(event: Event): void {
+    if (this.audioPlayer) { // Pastikan audioPlayer sudah diinisialisasi
+        this.duration = this.audioPlayer.duration;
+        this.cdr.detectChanges(); // Update view jika perlu
+    }
+  }
+
+  onAudioTimeUpdate(event: Event): void {
+     if (this.audioPlayer) {
+        this.currentTime = this.audioPlayer.currentTime;
+        this.audioProgress = (this.currentTime / this.duration) * 100;
+        this.cdr.detectChanges(); // Update view jika perlu
+     }
+  }
+
+  onAudioEnded(): void {
+    this.isPlaying = false;
+    this.audioProgress = 0; // atau 100, tergantung preferensi
+    this.currentTime = 0; // Reset currentTime saat lagu selesai
+    this.cdr.detectChanges();
+  }
+
+  togglePlayPause(): void {
+    if (!this.audioPlayer) {
+      this.setupAudioPlayer(); // Coba setup jika belum
+      if(!this.audioPlayer) return; // Jika masih belum ada, keluar
+    }
+
+    if (this.audioPlayer.paused) {
+      this.audioPlayer.play();
+      this.isPlaying = true;
+    } else {
+      this.audioPlayer.pause();
+      this.isPlaying = false;
+    }
+    this.cdr.detectChanges();
+  }
+
+  seekAudio(event: MouseEvent): void {
+    if (!this.audioPlayer || !this.duration) return;
+    const progressBarContainer = event.currentTarget as HTMLElement;
+    const clickPosition = event.offsetX;
+    const barWidth = progressBarContainer.offsetWidth;
+    const seekTime = (clickPosition / barWidth) * this.duration;
+    this.audioPlayer.currentTime = seekTime;
+    this.cdr.detectChanges();
+  }
+
   // BehaviorSubject internal untuk error message
   private _errorMessage = new BehaviorSubject<string | null>(null);
   private _setErrorMessage(msg: string | null): void {
@@ -175,7 +270,21 @@ export class DetailMessageComponent implements OnInit {
    onImageError(event: Event): void {
     console.warn('DetailMessageComponent: Message image failed to load.');
     (event.target as HTMLImageElement).style.display = 'none';
-   }
+  }
+
+  formatMessageText(snippet: string): string {
+    // Contoh sederhana:
+    // Anda perlu logika yang lebih canggih untuk mencocokkan pola dari desain Anda.
+    // Ini hanya ilustrasi.
+    let formattedText = snippet;
+    // Misalnya, jika Anda ingin "MAKAN JELLY RASA tomat" selalu merah
+    const targetPhrase = "MAKAN JELLY RASA tomat";
+    if (snippet.includes(targetPhrase)) {
+      formattedText = snippet.replace(targetPhrase, `<span style="color: red;">${targetPhrase}</span>`);
+    }
+    // Tambahkan logika lain untuk warna berbeda jika perlu
+    return formattedText;
+  }
 }
 
 // Helper function

@@ -7,4 +7,7 @@ export interface Message {
   imageUrl?: string | null; // Bisa string URL atau null
   senderId: string;
   timestamp: Timestamp; // Gunakan tipe Timestamp dari Firestore
+  songName?: string | null; // Properti baru untuk nama lagu
+  songUrl?: string | null;  // Properti baru untuk URL lagu
+  songAlbumArtUrl?: string;
 }

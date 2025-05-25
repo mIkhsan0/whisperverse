@@ -1,5 +1,4 @@
 <div class="home-page-container">
-
   <header class="home-header" [class.scrolled]="isScrolled">
     <div class="header-content">
       <img src="assets/ic_smiley_cloud_2.svg" alt="Logo WhisperVerse" class="header-logo">
@@ -20,6 +19,44 @@
   </header>
 
   <main class="main-content">
+    <h2>Pesan Terbaru</h2>
+    <div class="message-grid" *ngIf="(messages$ | async) as messages; else loadingOrError">
+      <div class="message-card" *ngFor="let message of messages" (click)="navigateToDetail(message.documentId)">
+        <div class="card-image-container">
+          <img *ngIf="message.imageUrl" [src]="message.imageUrl" alt="Gambar Pesan" class="message-image" (error)="onImageError($event, message)">
+          <div *ngIf="!message.imageUrl" class="image-placeholder">
+            <span class="material-icons-outlined">image</span>
+            <span>Tidak ada gambar</span>
+          </div>
+        </div>
+
+        <div *ngIf="message.songName && message.songUrl" class="song-info">
+          <div class="song-details">
+            <span class="song-title">{{ message.songName.split(' - ')[0] }}</span>
+            <span class="song-artist">{{ message.songName.split(' - ')[1] || 'Artis tidak diketahui' }}</span>
+          </div>
+          <img src="assets/ic_spotify.svg" alt="Spotify" class="spotify-icon">
+        </div>
+        <!-- <div *ngIf="!message.songName && !message.songUrl" class="song-info-placeholder">
+          <span class="material-icons-outlined">music_note</span>
+          <span>Info lagu tidak tersedia</span>
+        </div> -->
+
+        <div class="card-text-content">
+          <div class="card-recipient">
+            To: {{ message.recipient }}
+          </div>
+          <p class="message-snippet">{{ message.snippet }}</p>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #loadingOrError>
+      <div class="loading-indicator">Memuat pesan...</div>
+    </ng-template>
+  </main>
+
+  <!-- <main class="main-content">
     <h2>Pesan Terbaru</h2>
     <div class="message-grid" *ngIf="(messages$ | async) as messages; else loadingOrError">
       <div class="message-card" *ngFor="let message of messages" (click)="navigateToDetail(message.documentId)">
@@ -45,6 +82,6 @@
     <ng-template #loadingOrError>
       <div class="loading-indicator">Memuat pesan...</div>
       </ng-template>
-  </main>
+  </main> -->
 
 </div>

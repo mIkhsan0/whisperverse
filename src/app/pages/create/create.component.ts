@@ -8,6 +8,8 @@ import { Auth, user } from '@angular/fire/auth'; // user observable
 import { Firestore, collection, addDoc, serverTimestamp } from '@angular/fire/firestore';
 // Cloudinary tidak punya SDK Angular resmi yang mudah, kita bisa pakai Fetch API
 
+import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { MainLayoutComponent } from '../../layout/main-layout/main-layout.component';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators'; // Untuk mengambil nilai user saat ini
 
@@ -30,6 +32,13 @@ export class CreateComponent implements OnDestroy {
   selectedFile: File | null = null;
   selectedFileName: string | null = null;
   imagePreviewUrl: string | ArrayBuffer | null = null;
+  selectedSongName: string | null = null;
+  selectedSongUrl: string | null = null; // URL lagu dari Firebase Storage atau API lain
+  // Jika Anda punya daftar lagu yang tetap:
+  // availableSongs: { name: string, url: string, artist?: string }[] = [
+  //   { name: 'Lagu Gembira', url: 'path/to/lagu1.mp3', artist: 'Penyanyi A' },
+  //   { name: 'Melodi Sedih', url: 'path/to/lagu2.mp3', artist: 'Penyanyi B' }
+  // ];
 
   // State variables
   isUploading: boolean = false;
@@ -103,15 +112,37 @@ export class CreateComponent implements OnDestroy {
       try {
         uploadedImageUrl = await this.uploadImageToCloudinary(this.selectedFile);
         console.log('Image uploaded successfully:', uploadedImageUrl);
+        
+        const messagesCollectionRef = collection(this.firestore, 'messages');
+        const messageData = {
+          recipient: this.recipient,
+          snippet: this.messageText,
+          senderId: this.userId,
+          timestamp: serverTimestamp(),
+          imageUrl: uploadedImageUrl, // Tetap ada
+          songName: this.selectedSongName, // Tambahkan nama lagu
+          songUrl: this.selectedSongUrl     // Tambahkan URL lagu
+        };
+        
+        const docRef = await addDoc(messagesCollectionRef, messageData);
+        console.log('Message sent successfully with ID:', docRef.id);
+
+        this.resetForm();
+        this.router.navigate(['/success']);
+        
       } catch (error) {
         console.error('Cloudinary upload failed:', error);
         this.errorMessage = `Gagal mengunggah gambar: ${error}`;
         this.isUploading = false;
+        console.error('Error sending message to Firestore:', error);
+        this.errorMessage = `Gagal mengirim pesan: ${error}`;
         return; // Hentikan proses jika upload gagal
       } finally {
         this.isUploading = false;
       }
+      
     }
+    
 
     // 2. Simpan data pesan ke Firestore
     this.isSending = true;
@@ -171,6 +202,28 @@ export class CreateComponent implements OnDestroy {
     }
   }
 
+
+  openSongSelection(): void {
+    // Logika untuk membuka modal/dialog pemilihan lagu
+    // Ini bisa menggunakan library modal pihak ketiga atau custom component
+    console.log('Membuka dialog pemilihan lagu...');
+    // Contoh sederhana: menggunakan prompt (tidak disarankan untuk UI sebenarnya)
+    // const songChoice = prompt("Pilih lagu:\n1. Lagu Gembira\n2. Melodi Sedih");
+    // if (songChoice === "1" && this.availableSongs[0]) {
+    //   this.selectSong(this.availableSongs[0]);
+    // } else if (songChoice === "2" && this.availableSongs[1]) {
+    //   this.selectSong(this.availableSongs[1]);
+    // }
+  }
+   // Fungsi ini akan dipanggil dari dialog pemilihan lagu
+  selectSong(song: { name: string, url: string, artist?: string }): void {
+    this.selectedSongName = song.artist ? `${song.name} - ${song.artist}` : song.name;
+    this.selectedSongUrl = song.url;
+    console.log('Lagu dipilih:', this.selectedSongName, this.selectedSongUrl);
+  }
+
+
+
   // Fungsi untuk mereset form setelah sukses
   private resetForm(): void {
     this.recipient = '';
@@ -178,6 +231,8 @@ export class CreateComponent implements OnDestroy {
     this.selectedFile = null;
     this.selectedFileName = null;
     this.imagePreviewUrl = null;
+    this.selectedSongName = null; // Reset lagu yang dipilih
+    this.selectedSongUrl = null;   // Reset URL lagu
     this.errorMessage = null;
     // Reset file input value (agak tricky, cara paling mudah adalah me-reset formnya,
     // tapi karena kita pakai ngModel, cukup set properti file ke null)

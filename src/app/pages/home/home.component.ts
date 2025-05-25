@@ -95,14 +95,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   // Fungsi fallback gambar
-  onImageError(event: Event): void {
-    console.warn('Image failed to load:', (event.target as HTMLImageElement)?.src);
-    // (event.target as HTMLImageElement).src = 'assets/placeholder-image.png';
-     (event.target as HTMLImageElement).style.display = 'none'; // Sembunyikan jika error
-      // Atau tampilkan placeholder div
-     const placeholder = (event.target as HTMLImageElement).nextElementSibling;
-     if (placeholder && placeholder.classList.contains('image-placeholder')) {
-       (placeholder as HTMLElement).style.display = 'flex';
-     }
+  onImageError(event: Event, message: Message): void {
+    const imgElement = event.target as HTMLImageElement;
+    console.warn('Image failed to load:', imgElement?.src, 'for message to:', message.recipient);
+    imgElement.style.display = 'none'; // Sembunyikan gambar jika error
+    
+    const container = imgElement.parentElement;
+    if (container) {
+      const placeholder = container.querySelector('.image-placeholder');
+      if (placeholder) {
+        (placeholder as HTMLElement).style.display = 'flex'; // Tampilkan placeholder
+      }
+    }
   }
 }
