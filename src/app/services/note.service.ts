@@ -14,6 +14,11 @@ export interface Note {
   creatorUserId: string;
   createdAt: any; // Firestore Timestamp (bisa jadi objek atau string ISO)
   updatedAt: any; // Firestore Timestamp
+  songTitle?: string | null;
+  songArtist?: string | null;
+  songUrl?: string | null;
+  songAlbumArtUrl?: string | null;
+  songDuration?: number | null;
 }
 
 export interface CreateNotePayload { // Data yang dikirim untuk membuat note

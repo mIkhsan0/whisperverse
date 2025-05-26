@@ -241,5 +241,12 @@ input[type="file"].hidden-file-input {
   width: 100%;
   max-width: 350px; // Batasi lebar audio player
   border-radius: 5px;
+  background-color: #f1f3f4;
   border: 1px solid $input-border-color; // Sesuaikan dengan variabel Anda
+}
+
+audio controls {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

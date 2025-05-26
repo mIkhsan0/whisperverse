@@ -1,31 +1,30 @@
 <div class="detail-container">
-  <div *ngIf="isLoading$ | async; else contentLoaded" class="status-indicator">
-    Memuat pesan...
+  <div *ngIf="isLoading$.value; else contentLoaded" class="status-indicator"> Memuat pesan...
   </div>
 
   <ng-template #contentLoaded>
-    <ng-container *ngIf="message$ | async as message; else errorOrNotFound">
+    <ng-container *ngIf="note$ | async as note; else errorOrNotFound">
       <h1 class="detail-page-title">Pesan Rahasia</h1>
 
       <div class="polaroid-cards-container">
-        <div class="polaroid-card image-card" *ngIf="message.imageUrl">
-          <img [src]="message.imageUrl"
+        <div class="polaroid-card image-card" *ngIf="note.gambar">
+          <img [src]="note.gambar"
                alt="Gambar Pesan"
                class="polaroid-content-image"
                (error)="onImageError($event)">
-          <div class="polaroid-recipient">To: {{ message.recipient }}</div>
+          <div class="polaroid-recipient">To: {{ note.penerima }}</div>
         </div>
-        <div class="polaroid-card image-card placeholder-card" *ngIf="!message.imageUrl && !message.songName">
+        <div class="polaroid-card image-card placeholder-card" *ngIf="!note.gambar && !note.songTitle">
             <div class="image-placeholder-detail">
                 Tidak ada gambar
             </div>
-            <div class="polaroid-recipient">To: {{ message.recipient }}</div>
+            <div class="polaroid-recipient">To: {{ note.penerima }}</div>
         </div>
 
-        <div class="polaroid-card song-card" *ngIf="message.songName  && message.songUrl">
+        <div class="polaroid-card song-card" *ngIf="note.songTitle && note.songUrl">
           <div class="song-art-container">
-            <img *ngIf="message.songAlbumArtUrl" [src]="message.songAlbumArtUrl" alt="Album Art" class="song-album-art">
-            <div *ngIf="!message.songAlbumArtUrl" class="image-placeholder-detail song-art-placeholder">
+            <img *ngIf="note.songAlbumArtUrl" [src]="note.songAlbumArtUrl" alt="Album Art" class="song-album-art">
+            <div *ngIf="!note.songAlbumArtUrl" class="image-placeholder-detail song-art-placeholder">
               <svg class="icon-placeholder icon-music-large" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="60px" height="60px" fill="#cccccc">
                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6zm-2 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
               </svg>
@@ -33,12 +32,12 @@
           </div>
 
           <div class="song-info-detail">
-            <span class="song-title-detail">{{ message.songName ? message.songName.split(' - ')[0] : 'Lagu Pilihan' }}</span>
-            <span class="song-artist-detail">{{ message.songName ? message.songName.split(' - ')[1] : 'Artis tidak diketahui' }}</span>
+            <span class="song-title-detail">{{ note.songTitle }}</span>
+            <span class="song-artist-detail">{{ note.songArtist || 'Artis tidak diketahui' }}</span>
           </div>
 
           <div class="audio-player-controls">
-            <audio #audioPlayer [src]="message.songUrl" (loadedmetadata)="onAudioLoadedMetadata($event)" (timeupdate)="onAudioTimeUpdate($event)" (ended)="onAudioEnded()"></audio>
+            <audio #audioPlayer [src]="note.songUrl" (loadedmetadata)="onAudioLoadedMetadata($event)" (timeupdate)="onAudioTimeUpdate($event)" (ended)="onAudioEnded()"></audio>
             <button (click)="togglePlayPause()" class="play-pause-btn">
               <svg *ngIf="!isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
               <svg *ngIf="isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
@@ -49,34 +48,31 @@
             <span class="time-display">{{ currentTime | formatTime }} / {{ duration | formatTime }}</span>
           </div>
         </div>
-        <div class="polaroid-card song-card placeholder-card" *ngIf="!message.songName">
-            <div class="image-placeholder-detail">
+        <div class="polaroid-card song-card placeholder-card" *ngIf="!note.songTitle && !note.gambar"> <div class="image-placeholder-detail">
                 Tidak ada lagu dipilih
             </div>
         </div>
       </div>
 
       <h2 class="snippet-title">Pesan Untukmu:</h2>
-      <div class="main-snippet-text" [innerHTML]="formatMessageText(message.snippet)"></div>
+      <div class="main-snippet-text" [innerHTML]="formatMessageText(note.pesan)"></div>
       
       <div class="action-buttons">
         <button class="btn btn-back" (click)="goBack()">Halaman Utama</button>
-        <button *ngIf="isSender$ | async" class="btn btn-delete" (click)="deleteMessage()">
-          Hapus Pesan
+        <button *ngIf="isSender$ | async" class="btn btn-delete" (click)="deleteMessage()"> Hapus Pesan
         </button>
       </div>
     </ng-container>
   </ng-template>
 
   <ng-template #errorOrNotFound>
-    <div *ngIf="!(isLoading$ | async) && (errorMessage$ | async) as errorMsg" class="status-indicator error">
+    <div *ngIf="!(isLoading$.value) && (errorMessage$ | async) as errorMsg" class="status-indicator error">
       {{ errorMsg }}
       <button class="btn btn-back-error" (click)="goBack()">Kembali</button>
     </div>
-    <div *ngIf="!(isLoading$ | async) && !(errorMessage$ | async) && !(message$ | async)" class="status-indicator">
+    <div *ngIf="!(isLoading$.value) && !(errorMessage$ | async) && !(note$ | async)" class="status-indicator">
        Pesan tidak dapat ditemukan atau ID tidak valid.
        <button class="btn btn-back-error" (click)="goBack()">Kembali</button>
      </div>
   </ng-template>
-
 </div>

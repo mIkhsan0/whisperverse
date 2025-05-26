@@ -33,7 +33,7 @@ export interface UpdateMusicResponse {
   providedIn: 'root'
 })
 
-export class ApiService {
+export class MusicService {
   private baseUrl = 'http://localhost:3000/api/music';
 
   constructor(private http: HttpClient, private authService: AuthService) { }

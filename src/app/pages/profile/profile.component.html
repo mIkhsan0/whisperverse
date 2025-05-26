@@ -1,40 +1,46 @@
-<div class="profile-container" *ngIf="(userProfile$ | async) as profile; else loadingOrError">
+<div class="profile-container">
+  <div *ngIf="isLoading$ | async; else contentLoaded" class="loading-indicator initial-load">
+    Memuat data profil...
+  </div>
 
-    <h1 class="profile-title">Profil</h1>
-  
-    <div class="profile-pic-container">
-      <img
-        [src]="profile.profileImageUrl || defaultProfilePic"
-        alt="Foto Profil {{ profile.username }}"
-        class="profile-pic"
-        (error)="onProfileImageError($event)">
-    </div>
-  
-  
-    <div class="post-count">
-      {{ (postCount$ | async) ?? 0 }} Postingan
+  <ng-template #contentLoaded>
+    <ng-container *ngIf="userProfile$ | async as profile; else noProfileOrError">
+      <h1 class="profile-title">Profil</h1>
+
+      <div class="profile-pic-container">
+        <img
+          [src]="profile.otherAccountDetails?.photoURL || defaultProfilePic" alt="Foto Profil {{ profile.username }}"
+          class="profile-pic"
+          (error)="onProfileImageError($event)"> </div>
+
+      <div class="post-count">
+        {{ profile.numberOfPosts ?? 0 }} Postingan
       </div>
-  
-    <div class="info-section">
-      <div class="info-field">
-        <label>Email</label>
-        <div class="info-value">{{ (userEmail$ | async) ?? profile.email ?? 'N/A' }}</div>
+
+      <div class="info-section">
+        <div class="info-field">
+          <label>Email</label>
+          <div class="info-value">{{ profile.email }}</div>
+        </div>
+
+        <div class="info-field">
+          <label>Username</label>
+          <div class="info-value">{{ profile.username }}</div>
+        </div>
+
+        </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-edit" (click)="goToEditProfile()">Ubah Profil</button>
+        <button class="btn btn-logout" (click)="logout()">Log Out</button>
       </div>
-  
-      <div class="info-field">
-        <label>Username</label>
-        <div class="info-value">{{ profile.username ?? 'N/A' }}</div>
-      </div>
+    </ng-container>
+  </ng-template>
+
+  <ng-template #noProfileOrError>
+    <div *ngIf="!(isLoading$ | async)" class="loading-indicator initial-load">
+      Tidak dapat memuat profil atau Anda belum login.
+      <button class="btn btn-primary" routerLink="/login" style="margin-top: 10px;">Login</button>
     </div>
-  
-    <div class="action-buttons">
-      <button class="btn btn-edit" (click)="goToEditProfile()">Ubah Profil</button>
-      <button class="btn btn-logout" (click)="logout()">Log Out</button>
-    </div>
-  
+  </ng-template>
 </div>
-  
-<ng-template #loadingOrError>
-    <div class="loading-indicator initial-load">Memuat data profil...</div>
-</ng-template>
-  

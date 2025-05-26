@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
 import { tap, switchMap, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -39,6 +39,20 @@ export interface LoginResponse { // Sesuai dengan respons dari backend /login An
 export interface ProfileResponse {
   message: string;
   userProfile: UserProfileFromFirestore;
+}
+
+// Definisikan payload untuk update profil dan ganti password
+export interface UpdateProfilePayload {
+  username?: string;
+  displayName?: string;
+  photoURL?: string | null; // URL dari Cloudinary, null untuk menghapus
+  userDescription?: string;
+  userLocation?: string;
+}
+
+export interface ChangePasswordPayload {
+  newPassword: string;
+  // currentPassword?: string; // Opsional, tergantung logika backend Anda
 }
 
 @Injectable({
@@ -150,6 +164,44 @@ export class AuthService {
     );
   }
 
+  updateUserProfile(profileData: UpdateProfilePayload): Observable<ProfileResponse> {
+    const headers = this.getAuthHeaders();
+    if (!headers.has('Authorization')) {
+      return throwError(() => new Error('Tidak terautentikasi untuk update profil.'));
+    }
+    this.isLoadingSubject.next(true);
+    return this.http.put<ProfileResponse>(`${this.baseUrl}/profile`, profileData, { headers })
+      .pipe(
+        tap(response => {
+          if (response && response.userProfile) {
+            // Update currentUserProfileSubject dengan data profil yang baru
+            this.currentUserProfileSubject.next(response.userProfile);
+          }
+          this.isLoadingSubject.next(false);
+        }),
+        catchError(err => {
+          this.isLoadingSubject.next(false);
+          throw err;
+        })
+      );
+  }
+
+  changePassword(passwordData: ChangePasswordPayload): Observable<{ message: string }> {
+    const headers = this.getAuthHeaders();
+    if (!headers.has('Authorization')) {
+      return throwError(() => new Error('Tidak terautentikasi untuk ganti password.'));
+    }
+    this.isLoadingSubject.next(true);
+    return this.http.post<{ message: string }>(`${this.baseUrl}/change-password`, passwordData, { headers })
+      .pipe(
+        tap(() => this.isLoadingSubject.next(false)),
+        catchError(err => {
+          this.isLoadingSubject.next(false);
+          throw err;
+        })
+      );
+  }
+
   // Metode untuk logout
   logout(): void {
     this.clearAuthData();
@@ -178,6 +230,34 @@ export class AuthService {
   // Mendapatkan ID Token saat ini (jika diperlukan oleh service lain secara langsung)
   getCurrentIdToken(): string | null {
     return this.idToken;
+  }
+
+  // Tambahkan atau pastikan metode ini ada:
+  setFirebaseToken(token: string | null): void {
+    if (token) {
+      this.idToken = token;
+      localStorage.setItem('app_idToken', token);
+      // Setelah token diset (misalnya dari Google Login client-side),
+      // kita juga perlu mengambil profil pengguna dari backend
+      // agar currentUserProfileSubject terupdate.
+      this.fetchAndSetUserProfile().subscribe({
+        next: (profile) => {
+          if (profile) {
+            console.log('AuthService: Profile fetched successfully after setting Google token.');
+          } else {
+            console.warn('AuthService: Profile could not be fetched after setting Google token (user might not exist in backend Firestore yet or token invalid for profile endpoint).');
+            // Anda mungkin ingin mengarahkan ke halaman registrasi detail jika profil tidak ada
+            // atau menangani kasus ini secara spesifik.
+          }
+        },
+        error: (err) => {
+          console.error('AuthService: Error fetching profile after setting Google token:', err);
+        }
+      });
+    } else {
+      // Jika token null, berarti proses mendapatkan token gagal atau logout dari Google
+      this.clearAuthData();
+    }
   }
 
   // Logika untuk Refresh Token (Contoh Sederhana, perlu diimplementasikan dengan lebih cermat)

@@ -1,0 +1,56 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">Pilih Lagu</h3>
+      <button class="btn-close-modal" (click)="closeModal()" aria-label="Tutup modal">
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="search-container">
+        <input
+          type="text"
+          placeholder="Cari judul, artis, atau album..."
+          [(ngModel)]="searchTerm"
+          (input)="filterMusic()"
+          class="search-input"
+          aria-label="Cari musik">
+        <span class="material-icons-outlined search-icon">search</span>
+      </div>
+
+      <div *ngIf="isLoading" class="loading-indicator">Memuat daftar musik...</div>
+      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+      <ul *ngIf="!isLoading && !errorMessage && filteredMusic.length > 0" class="song-list">
+        <li
+          *ngFor="let song of filteredMusic"
+          class="song-item"
+          (click)="selectSong(song)"
+          (keydown.enter)="selectSong(song)"
+          tabindex="0">
+          <img [src]="song.imageUrl || 'assets/ic_default_album_art.svg'" alt="Cover {{ song.title }}" class="song-item-cover">
+          <div class="song-item-info">
+            <span class="song-item-title">{{ song.title }}</span>
+            <span class="song-item-artist">{{ song.artist }}</span>
+            <span *ngIf="song.album" class="song-item-album">{{ song.album }}</span>
+          </div>
+          <span class="material-icons-outlined">chevron_right</span>
+        </li>
+      </ul>
+
+      <div *ngIf="!isLoading && !errorMessage && filteredMusic.length === 0 && searchTerm.trim()" class="no-results-message">
+        Tidak ada musik yang cocok dengan pencarian "{{ searchTerm }}".
+      </div>
+      <div *ngIf="!isLoading && !errorMessage && allMusic.length === 0 && !searchTerm.trim()" class="no-results-message">
+        Tidak ada musik tersedia saat ini.
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeModal()">
+        Batal
+      </button>
+    </div>
+  </div>
+</div>

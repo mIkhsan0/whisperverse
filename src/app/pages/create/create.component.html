@@ -1,17 +1,15 @@
 <div class="create-container">
     <img src="assets/ic_smiley_cloud.svg" alt="Ikon Awan Tersenyum" class="mascot-icon">
-    <h1 class="create-title">Pesan Rahasia</h1>
-    <p class="create-subtitle">Ini tempat aman untuk perasaanmu yang belum sempat terungkap.</p>
-  
-    <form (ngSubmit)="sendMessage()" #createForm="ngForm" class="create-form">
+    <h1 class="create-title">Pesan Rahasia Baru</h1> <p class="create-subtitle">Lampirkan musik untuk menemani pesanmu.</p>
+
+    <form (ngSubmit)="createNote()" #createForm="ngForm" class="create-form">
       <div class="form-field">
         <label for="recipient">Penerima:</label>
         <input
           type="text"
           id="recipient"
           name="recipient"
-          [(ngModel)]="recipient"
-          required
+          [(ngModel)]="penerima" required
           #recipientInput="ngModel"
           placeholder="Nama penerima"
           [class.invalid-input]="recipientInput.invalid && (recipientInput.dirty || recipientInput.touched)">
@@ -20,15 +18,14 @@
           <span *ngIf="recipientInput.errors?.['required']">Nama penerima wajib diisi.</span>
         </div>
       </div>
-  
+
       <div class="form-field">
         <label for="message">Pesan:</label>
         <textarea
           id="message"
           name="message"
           rows="4"
-          [(ngModel)]="messageText"
-          required
+          [(ngModel)]="pesan" required
           #messageInput="ngModel"
           placeholder="Tuliskan pesan rahasiamu"
           [class.invalid-input]="messageInput.invalid && (messageInput.dirty || messageInput.touched)">
@@ -41,26 +38,30 @@
 
       <div class="form-field">
         <label for="song-selection-button">Pilih Lagu (Opsional):</label>
-        <div 
+        <div
           id="song-selection-button"
           class="input-like-button"
           (click)="openSongSelection()"
           tabindex="0"
           role="button"
-          [class.has-content]="selectedSongName">
-          <svg class="icon-placeholder" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px" fill="#7077D6">
+          [class.has-content]="selectedMusicInfo?.title"> <svg class="icon-placeholder" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px" fill="#7077D6">
             <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6zm-2 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
           </svg>
-          <span>{{ selectedSongName || 'Pilih Lagu' }}</span>
-          <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px" fill="#7077D6">
+          <span>{{ selectedMusicInfo?.title || 'Pilih Lagu' }}</span> <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px" fill="#7077D6">
             <path d="M7 10l5 5 5-5H7z"/>
           </svg>
         </div>
-        <div *ngIf="selectedSongUrl" class="audio-preview-container">
-          <audio controls [src]="selectedSongUrl" class="audio-preview"></audio>
+        <div *ngIf="selectedMusicInfo && selectedMusicInfo.musicUrl" class="audio-preview-container">
+          <audio controls [src]="selectedMusicInfo.musicUrl" class="audio-preview"></audio>
         </div>
       </div>
-  
+
+      <app-song-selection-modal
+        *ngIf="isSongModalOpen"
+        (songSelected)="handleSongSelectedFromModal($event)"
+        (closeModalEvent)="closeSongSelectionModal()">
+      </app-song-selection-modal>
+
       <div class="form-field">
         <label for="imageUploadButton">Unggah Gambar (Opsional):</label>
         <label
@@ -84,20 +85,17 @@
           (change)="onFileSelected($event)"
           #fileInput>
         <img *ngIf="imagePreviewUrl" [src]="imagePreviewUrl" alt="Preview Gambar" class="image-preview">
-        </div>
-  
-       <div *ngIf="errorMessage" class="error-message general-error">
+      </div>
+
+       <div *ngIf="errorMessage && !(isCreatingNote || isUploadingImage)" class="error-message general-error">
           {{ errorMessage }}
         </div>
-  
-        <div *ngIf="isUploading || isSending" class="loading-indicator">
-          <p>{{ isUploading ? 'Mengunggah gambar...' : (isSending ? 'Mengirim pesan...' : '') }}</p>
+
+        <div *ngIf="isUploadingImage || isCreatingNote" class="loading-indicator">
+          <p>{{ isUploadingImage ? 'Mengunggah gambar...' : (isCreatingNote ? 'Membuat catatan...' : '') }}</p>
         </div>
-  
-  
-      <button type="submit" class="btn btn-primary btn-send" [disabled]="createForm.invalid || isUploading || isSending">
-        Kirim
-      </button>
+
+      <button type="submit" class="btn btn-primary btn-send" [disabled]="createForm.invalid || isUploadingImage || isCreatingNote">
+        Kirim Catatan </button>
     </form>
   </div>
-  
